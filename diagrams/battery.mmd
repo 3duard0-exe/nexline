@@ -1,0 +1,64 @@
+graph TD
+    subgraph "Battery Power Unit (7.4V Nominal)"
+        direction LR
+        subgraph "2S2P Battery Pack"
+            B1["Battery 1"] & B2["Battery 2"] --> M_MID["Midpoint (BM)"]
+            B3["Battery 3"] & B4["Battery 4"] --> M_MID
+            B1 & B2 -- "+ Terminals" --> P_POS["Main Positive (B+)"]
+            B3 & B4 -- "- Terminals" --> P_NEG["Main Negative (B-)"]
+        end
+
+        BMS["2S BMS Module"]
+        style BMS fill:#f9f,stroke:#333,stroke-width:2px
+        
+        P_POS -- "to B+" --> BMS
+        M_MID -- "to BM" --> BMS
+        P_NEG -- "to B-" --> BMS
+
+        BMS -- "P+ (7.4V Out)" --> POWER_OUT["Main 7.4V Output"]
+        BMS -- "P- (Ground)" --> GND_BUS["System Ground Bus"]
+    end
+
+    subgraph "Power Distribution"
+        POWER_OUT -- "7.4V" --> L293D_VMOT["L293D Motor Power (VMOT / VCC2)"]
+        POWER_OUT -- "7.4V Input" --> BUCK["DC-DC Buck Converter"]
+        BUCK -- "Stable 5V Output" --> VCC_5V_BUS["5V Power Bus"]
+    end
+
+    subgraph "Logic and Control Components"
+        ESP32["ESP32 Dev Board"]
+        style ESP32 fill:#ccf,stroke:#333,stroke-width:2px
+        
+        L293D_LOGIC["L293D Logic Power (VLOGIC / VCC1)"]
+        
+        IR_SENSORS["16x IR Sensor Modules"]
+    end
+
+    subgraph "Motors"
+        MOT1["Motor 1"]
+        MOT2["Motor 2"]
+        L293D_MOT_OUT["L293D Motor Outputs"]
+    end
+
+    %% Power Connections from Buses
+    VCC_5V_BUS -- "5V" --> L293D_LOGIC
+    VCC_5V_BUS -- "5V to VIN Pin" --> ESP32
+    
+    %% Ground Connections
+    GND_BUS -- "GND" --> L293D_VMOT
+    GND_BUS -- "GND" --> BUCK
+    GND_BUS -- "GND" --> ESP32
+    GND_BUS -- "GND" --> IR_SENSORS
+    GND_BUS -- "GND" --> L293D_LOGIC
+
+    %% Sensor Power from ESP32
+    ESP32 -- "3.3V or 5V Pin" --> IR_SENSORS
+
+    %% Motor Connections
+    L293D_VMOT -- "Outputs A/B" --> L293D_MOT_OUT
+    L293D_MOT_OUT --> MOT1
+    L293D_MOT_OUT --> MOT2
+
+    %% Control Signal Connections (Logical)
+    ESP32 -- "GPIO Pins (Logic Signals)" --> L293D_LOGIC
+    IR_SENSORS -- "Signal Pins" --> ESP32
