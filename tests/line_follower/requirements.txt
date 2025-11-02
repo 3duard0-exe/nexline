@@ -1,0 +1,5 @@
+numpy>=1.24 
+pygame>=2.5 
+torch>=2.2 
+onnx>=1.14
+
