@@ -2,6 +2,7 @@ Write an script to train a line follower. It will have 8 sensors aligned in a si
 
 
 
+## Commands
 ```
 python main.py --render 1 --train_episodes 100
 python main.py --train_episodes 300 --render 0
@@ -9,3 +10,6 @@ python main.py --train_episodes 0 --demo 1 --render 1 --model_path dqn_line_foll
 python main.py --train_episodes 0 --demo 1 --render 1 --model_path dqn_line_follower.pth --demo_level all --episodes_per_level 2
 python main.py --train_episodes 0 --demo 1 --render 1 --model_path dqn_line_follower.pth --demo_level all --episodes_per_level 2
 ```
+
+
+
