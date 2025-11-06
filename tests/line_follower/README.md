@@ -12,4 +12,6 @@ python main.py --train_episodes 0 --demo 1 --render 1 --model_path dqn_line_foll
 ```
 
 
-
+## TODO
+- add to the simulation real sizes, so that the model learns with a more real example.
+- Add functionality so that first it learns the track and then just do it faster from the beginning
